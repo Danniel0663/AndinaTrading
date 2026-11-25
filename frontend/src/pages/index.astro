@@ -218,7 +218,9 @@ import '@fontsource-variable/montserrat/index.css';
         .container.active .toggle-right {
             transform: translateX(200%);
         }
-    @media(max-width:580px) {
+    .container button.demo-access { background: #fff; color: #273746; border-color: #5c6bc0; }
+        .demo-note { margin-top: 6px; font-size: 12px; color: #475569; }
+        @media(max-width:580px) {
       .container { min-height:540px; width:calc(100% - 24px); }
       .container .form-container { width:100%; height:65%; top:0; }
       .container.active .form-container { transform:none; }
@@ -231,6 +233,7 @@ import '@fontsource-variable/montserrat/index.css';
 </head>
 
 <body>
+<form id="demo-access" method="post" action="/demo"></form>
 <div class="container" id="container">
     <!-- Formulario de Registro -->
     <div class="form-container sign-up">
@@ -247,6 +250,8 @@ import '@fontsource-variable/montserrat/index.css';
             <input type="email" id="email" name="email" class="form-control" placeholder="Correo Electrónico" required>
             <input type="password" id="contrasena" name="contrasena" class="form-control" placeholder="Contraseña" required>
             <button type="submit">Iniciar Sesión</button>
+            <button type="submit" form="demo-access" class="demo-access">Probar la demo</button>
+            <small class="demo-note">Sin registro · 10.000 USD ficticios</small>
             <div id="error" class="text-danger text-center mt-3" th:if="${error}" th:text="${error}">
                 <!-- Mensaje de error si existe -->
             </div>
