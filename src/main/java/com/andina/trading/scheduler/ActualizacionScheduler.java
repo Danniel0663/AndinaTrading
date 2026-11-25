@@ -19,6 +19,7 @@ import com.andina.trading.service.AccionService;
  * @version 1.0
  */
 @Component
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "andina.cotizaciones.activas", matchIfMissing = true)
 public class ActualizacionScheduler {
 
     private final AccionService accionService;

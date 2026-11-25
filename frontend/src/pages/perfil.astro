@@ -1,0 +1,62 @@
+---
+import '../styles/site.css';
+---
+<!doctype html>
+<html lang="es">
+  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Mi cartera · Andina Trading</title><script is:inline defer src="/andina.js"></script></head>
+  <body>
+    <aside th:replace="~{base :: sidebar('perfil')}"></aside>
+    <main>
+      <header th:replace="~{base :: top('Mi cartera')}"></header>
+      <article>
+        <h1>Mi cartera</h1>
+        <div th:replace="~{base :: avisos}"></div>
+        <div th:if="${userEmail != null}">
+          <section class="hero contours">
+            <div>
+              <p>Saldo disponible</p>
+              <div class="amount">
+                <span
+                  th:text="${#numbers.formatDecimal(userBalance,1,'POINT',2,'COMMA')}"
+                ></span>
+                <small>USD</small>
+              </div>
+              <p th:text="${userNombre + ' · ' + userEmail}"></p>
+            </div>
+          </section>
+          <section class="panel">
+            <h2>Mis posiciones</h2>
+            <div class="position" th:each="p : ${empresasUsuario}">
+              <strong th:text="${p.nombreEmpresa}"></strong
+              ><span th:text="${p.cantidad + ' acciones'}"></span>
+              <form method="post" action="/vender">
+                <input
+                  type="hidden"
+                  name="empresa"
+                  th:value="${p.nombreEmpresa}"
+                /><label
+                  >Unidades<input
+                    type="number"
+                    name="cantidad"
+                    min="1"
+                    th:max="${p.cantidad}"
+                    value="1"
+                    required /></label
+                ><button>Vender</button>
+              </form>
+            </div>
+            <p th:if="${#lists.isEmpty(empresasUsuario)}">
+              Tu cartera está vacía. Compra una acción para ver aquí tu primera
+              posición.
+            </p>
+            <a class="textlink" href="/acciones">Ir al mercado →</a>
+          </section>
+        </div>
+        <section class="panel" th:if="${userEmail == null}">
+          <p>Inicia sesión para consultar tus posiciones.</p>
+          <a href="/index">Iniciar sesión →</a>
+        </section>
+      </article>
+    </main>
+  </body>
+</html>

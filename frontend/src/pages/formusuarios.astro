@@ -1,0 +1,71 @@
+---
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/registro.css';
+---
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Formulario de Usuario</title>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/index">Andina Trading</a>
+
+
+    </div>
+</nav>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <form th:action="@{/saveusuarios}" th:object="${usuario}" method="POST">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h3 class="card-title mb-0" th:text="${usuario != null && usuario.idUsuario > 0 ? 'Editar Usuario' : 'Agregar Usuario'}"></h3>
+                    </div>
+                    <div class="card-body">
+                        <p th:if="${@environment.matchesProfiles('portfolio')}">Demo temporal. Usa datos de prueba. Las cuentas y operaciones se reinician con el servicio.</p>
+                        <p role="alert" th:if="${param.error}">No se pudo crear la cuenta. Prueba con otro correo.</p>
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input th:field="*{nombre}" id="nombre" type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input th:field="*{email}" id="email" type="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contrasena" class="form-label">Contraseña</label>
+                            <input th:field="*{contrasena}" id="contrasena" type="password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="rol" class="form-label">Rol</label>
+                            <select th:field="*{rol}" id="rol" class="form-control" required>
+                                <option value="INVERSIONISTA">Inversionista</option>
+                                <option value="ADMIN" th:unless="${@environment.matchesProfiles('portfolio')}">ADMIN</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="balance" class="form-label">Balance</label>
+                            <input th:field="*{balance}" id="balance" type="number" step="0.01" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3" th:unless="${@environment.matchesProfiles('portfolio')}">
+                            <label for="autenticacionDobleFactor" class="form-label">Autenticación Doble Factor</label>
+                            <input th:field="*{autenticacionDobleFactor}" id="autenticacionDobleFactor" type="checkbox" class="form-check-input">
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="submit" class="btn-custom-submit">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
