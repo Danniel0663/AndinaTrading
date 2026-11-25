@@ -58,6 +58,10 @@ public class SimulacionFinancieraService {
      * @return una lista de precios históricos de la acción
      */
     public List<BigDecimal> obtenerDatosHistoricos(String simbolo) {
+        if (rapidApiKey == null || rapidApiKey.isBlank()) {
+            return accionRepository.findTopByNombreEmpresaOrderByFechaActualizacionDesc(simbolo)
+                    .map(accion -> List.of(accion.getPrecioActual())).orElseGet(List::of);
+        }
         RestTemplate restTemplate = new RestTemplate();
         List<BigDecimal> preciosHistoricos = new ArrayList<>();
 
