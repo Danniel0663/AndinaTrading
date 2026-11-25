@@ -14,6 +14,16 @@ import java.util.Optional;
  * @version 1.0
  */
 public interface AccionRepository extends JpaRepository<Accion, Long> {
+    java.util.List<Accion> findTop300ByNombreEmpresaOrderByFechaActualizacionDescIdAccionDesc(String nombreEmpresa);
+
+    @org.springframework.data.jpa.repository.Query("""
+        select a from Accion a where not exists (
+            select b.idAccion from Accion b where b.nombreEmpresa = a.nombreEmpresa
+            and (b.fechaActualizacion > a.fechaActualizacion or
+                (b.fechaActualizacion = a.fechaActualizacion and b.idAccion > a.idAccion)))
+        order by a.nombreEmpresa
+        """)
+    java.util.List<Accion> cotizacionesActuales();
 
     /**
      * Encuentra una acción en la base de datos por el nombre de la empresa.

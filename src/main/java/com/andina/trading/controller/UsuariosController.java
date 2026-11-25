@@ -55,16 +55,30 @@ public class UsuariosController {
     @Autowired
     private AccionRepository accionRepository;
 
-    /** Almacena la acción seleccionada para las operaciones de compra/venta. */
-    private Optional<Accion> accionSeleccionada;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwords =
+            org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+
+    @Autowired
+    private org.springframework.core.env.Environment environment;
+
+    private boolean portfolio() {
+        return environment.matchesProfiles("portfolio");
+    }
 
     /**
      * Maneja la solicitud para listar todos los usuarios.
      *
      * @return ModelAndView que muestra la lista de usuarios.
      */
+    private void bloquearDirectorioPublico() {
+        if (portfolio()) {
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);
+        }
+    }
+
     @GetMapping("/listausuarios")
     public ModelAndView listar() {
+        bloquearDirectorioPublico();
         List<Usuarios> usuarios = urep.findAll();
         ModelAndView mav = new ModelAndView("listausuarios");
         mav.addObject("usuarios", usuarios);
@@ -93,7 +107,13 @@ public class UsuariosController {
     public String save(Usuarios usuario) {
         try {
             // Cifra la contraseña antes de guardar en la base de datos
-            String encryptedPassword = AESUtil.encrypt(usuario.getContrasena());
+            if (portfolio()) {
+                if (usuario.getIdUsuario() != 0 || usuario.getEmail() == null ||
+                        urep.findByEmail(usuario.getEmail()) != null) return "redirect:/newusuarios?error";
+                usuario.setRol(com.andina.trading.util.Rol.INVERSIONISTA);
+                usuario.setAutenticacionDobleFactor(false);
+            }
+            String encryptedPassword = portfolio() ? passwords.encode(usuario.getContrasena()) : AESUtil.encrypt(usuario.getContrasena());
             usuario.setContrasena(encryptedPassword);
 
             // Guarda el usuario con la contraseña cifrada
@@ -101,7 +121,7 @@ public class UsuariosController {
             return "redirect:/index";
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/formusuarios?error"; // Redirige con mensaje de error si ocurre un problema
+            return "redirect:/newusuarios?error"; // Redirige con mensaje de error si ocurre un problema
         }
     }
 
@@ -113,6 +133,7 @@ public class UsuariosController {
      */
     @PostMapping("/editausuarios")
     public ModelAndView editarPorId(@RequestParam("id") int id) {
+        bloquearDirectorioPublico();
         Optional<Usuarios> usuario = urep.findById(id);
         ModelAndView mav = new ModelAndView("formusuarios");
         usuario.ifPresent(value -> mav.addObject("usuario", value));
@@ -127,6 +148,7 @@ public class UsuariosController {
      */
     @PostMapping("/eliminarusuarios")
     public String delete(@RequestParam("id") int id) {
+        bloquearDirectorioPublico();
         urep.deleteById(id);
         return "redirect:/listausuarios";
     }
@@ -138,7 +160,14 @@ public class UsuariosController {
      */
     @GetMapping("/inicio")
     public ModelAndView inicio() {
-        return new ModelAndView("inicio");
+        ModelAndView vista = new ModelAndView("inicio");
+        String email = (String) session.getAttribute("userEmail");
+        if (email != null) {
+            Usuarios usuario = urep.findByEmail(email);
+            vista.addObject("cuenta", usuario);
+        }
+        vista.addObject("acciones", accionRepository.cotizacionesActuales());
+        return vista;
     }
 
     /**
@@ -146,7 +175,7 @@ public class UsuariosController {
      *
      * @return ModelAndView que muestra la página de inicio de sesión.
      */
-    @GetMapping("/index")
+    @GetMapping({"/", "/index"})
     public ModelAndView iniciosesion() {
         return new ModelAndView("index");
     }
@@ -174,8 +203,9 @@ public class UsuariosController {
     @PostMapping("/login")
     public ModelAndView doLogin(@RequestParam("email") String email, @RequestParam("contrasena") String contrasena) {
         try {
-            String encryptedPassword = AESUtil.encrypt(contrasena);
-            Optional<Usuarios> usuario = urep.findByEmailAndContrasena(email, encryptedPassword);
+            Optional<Usuarios> usuario = portfolio()
+                    ? Optional.ofNullable(urep.findByEmail(email)).filter(u -> passwords.matches(contrasena, u.getContrasena()))
+                    : urep.findByEmailAndContrasena(email, AESUtil.encrypt(contrasena));
             if (usuario.isPresent()) {
                 // Guarda el email en la sesión
                 session.setAttribute("userEmail", email);
@@ -236,7 +266,7 @@ public class UsuariosController {
         Usuarios usuario = urep.findByEmail(email);
 
         if (usuario != null && cantidad > 0) {
-            accionSeleccionada = accionRepository.findTopByNombreEmpresaOrderByFechaActualizacionDesc(empresa);
+            Optional<Accion> accionSeleccionada = accionRepository.findTopByNombreEmpresaOrderByFechaActualizacionDesc(empresa);
             if (accionSeleccionada.isPresent()) {
                 BigDecimal precioAccion = accionSeleccionada.get().getPrecioActual();
                 BigDecimal totalCompra = precioAccion.multiply(BigDecimal.valueOf(cantidad));
@@ -279,7 +309,7 @@ public class UsuariosController {
         Usuarios usuario = urep.findByEmail(email);
 
         if (usuario != null && cantidad > 0) {
-            accionSeleccionada = accionRepository.findTopByNombreEmpresaOrderByFechaActualizacionDesc(empresa);
+            Optional<Accion> accionSeleccionada = accionRepository.findTopByNombreEmpresaOrderByFechaActualizacionDesc(empresa);
 
             if (accionSeleccionada.isPresent()) {
                 BigDecimal precioAccion = accionSeleccionada.get().getPrecioActual();

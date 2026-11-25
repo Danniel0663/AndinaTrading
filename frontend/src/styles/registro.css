@@ -1,0 +1,119 @@
+/* Estilos personalizados */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito', sans-serif;
+            font-size: 20px;
+        }
+
+        body {
+            background-color: #d0d3d4;
+            color: #000;
+        }
+
+        .navbar {
+            background-color: #273746;
+            padding: 5px 10%;
+            height: 85px;
+        }
+
+        .navbar-brand {
+            color: #eceff1;
+            font-weight: 700;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .navbar-brand:hover {
+            color: #d0d3d4;
+        }
+
+        .navbar-nav .nav-link {
+            color: #eceff1;
+            padding: 0 15px;
+            transition: transform 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #d0d3d4;
+            transform: scale(1.1);
+        }
+
+        .btn-custom {
+            margin-left: 20px;
+            font-weight: 700;
+            color: #1b3039;
+            padding: 9px 25px;
+            background: #eceff1;
+            border: none;
+            border-radius: 50px;
+            transition: all 0.3s ease 0s;
+        }
+
+        .btn-custom:hover {
+            background-color: #e2f1f8;
+            color: #d0d3d4;
+            transform: scale(1.1);
+        }
+
+        /*/* Estilos personalizados para el formulario */
+        .card {
+            background-color: #ffffff; /* Fondo blanco para el formulario */
+            border-radius: 15px; /* Bordes redondeados */
+            padding: 20px; /* Espacio interno */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+            border: none;
+        }
+
+        .card-header h3 {
+            font-weight: bold;
+            text-align: center;
+        }
+        .card-header {
+            background-color: #ffffff; /* Cambia este color al que prefieras */
+            border-bottom: none; /* Elimina el borde inferior si es necesario */
+            border-radius: 10px 10px 0 0; /* Redondeado en las esquinas superiores */
+        }
+
+
+        .form-control {
+            background-color: #ffffff; /* Fondo suave para los campos */
+            border: 1px solid #e0e0e0; /* Borde sutil */
+            border-radius: 10px; /* Bordes redondeados */
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            background-color: #ffffff; /* Color más claro al enfocar */
+            border-color: #ffffff;
+            box-shadow: none;
+        }
+
+        .card-footer {
+            text-align: center;
+            background-color: transparent;
+            border-top: none;
+        }
+
+        /* Botón de enviar estilizado */
+        .btn-custom-submit {
+            background-color: #273746; /* Color similar al de referencia */
+            color: #ffffff;
+            font-weight: bold;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-custom-submit:hover {
+            background-color: #3a5c85; /* Color al pasar el mouse */
+        }
+
+        /* Estilo para el checkbox */
+        .form-check-label {
+            font-size: 14px;
+            color: #5f6368;
+        }

@@ -1,0 +1,63 @@
+---
+import '../styles/site.css';
+---
+<!doctype html>
+<html lang="es">
+  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Usuarios · Andina Trading</title><script is:inline defer src="/andina.js"></script></head>
+  <body>
+    <aside th:replace="~{base :: sidebar('listausuarios')}"></aside>
+    <main>
+      <header th:replace="~{base :: top('Usuarios')}"></header>
+      <article>
+        <h1>Usuarios</h1>
+        <div th:replace="~{base :: avisos}"></div>
+        <section class="panel">
+          <div class="sectionhead">
+            <h2>Directorio</h2>
+            <a href="/newusuarios">Agregar usuario ↗</a>
+          </div>
+          <div class="scroll">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Autenticación Doble Factor</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="usuario : ${usuarios}">
+                  <td th:text="${usuario.idUsuario}"></td>
+                  <td th:text="${usuario.nombre}"></td>
+                  <td th:text="${usuario.email}"></td>
+                  <td th:text="${usuario.rol}"></td>
+                  <td
+                    th:text="${usuario.autenticacionDobleFactor == true ? 'Sí' : 'No'}"
+                  ></td>
+                  <td>
+                    <form
+                      th:action="@{/eliminarusuarios}"
+                      method="post"
+                      data-confirm="¿Eliminar este usuario?"
+                      style="display: inline"
+                    >
+                      <input
+                        type="hidden"
+                        th:name="id"
+                        th:value="${usuario.idUsuario}"
+                      />
+                      <button type="submit" class="danger">Eliminar</button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </article>
+    </main>
+  </body>
+</html>
