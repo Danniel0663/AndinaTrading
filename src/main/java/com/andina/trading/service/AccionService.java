@@ -104,4 +104,8 @@ public class AccionService {
     public List<Accion> obtenerAcciones() {
         return accionRepository.findAll();
     }
+
+    public List<Accion> cotizacionesActuales() {
+        return accionRepository.cotizacionesActuales();
+    }
 }

@@ -49,7 +49,8 @@ public class AccionController {
      */
     @GetMapping
     public String mostrarAcciones(Model model) {
-        model.addAttribute("acciones", accionService.obtenerAcciones());
+        model.addAttribute("acciones", accionService.cotizacionesActuales());
+        model.addAttribute("historial", accionService.obtenerAcciones());
         model.addAttribute("empresas", empresaService.obtenerEmpresas());
         return "acciones";
     }

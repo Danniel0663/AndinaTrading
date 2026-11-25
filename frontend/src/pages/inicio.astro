@@ -1,0 +1,59 @@
+---
+import '../styles/site.css';
+import MarketChart from '../components/MarketChart.astro';
+---
+<!doctype html>
+<html lang="es">
+  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Resumen de inversión · Andina Trading</title><script is:inline defer src="/andina.js"></script></head>
+  <body>
+    <aside th:replace="~{base :: sidebar('inicio')}"></aside>
+    <main>
+      <header th:replace="~{base :: top('Resumen de inversión')}"></header>
+      <article>
+        <h1>Resumen de inversión</h1>
+        <div th:replace="~{base :: avisos}"></div>
+        <section class="hero contours">
+          <div>
+            <p>Saldo disponible</p>
+            <div class="amount">
+              <span
+                th:text="${cuenta != null ? #numbers.formatDecimal(cuenta.balance,1,'POINT',2,'COMMA') : '—'}"
+              ></span>
+              <small>USD</small>
+            </div>
+            <a class="lightbtn" href="/acciones">Explorar mercado ↗</a>
+          </div>
+        </section>
+        <MarketChart />
+        <div class="grid">
+          <section th:replace="~{base :: quotes}"></section>
+          <section class="panel">
+            <div class="sectionhead"><h2>Operaciones</h2></div>
+            <a class="action" href="/acciones#orden"
+              ><i>＋</i>
+              <div>
+                <strong>Comprar acciones</strong
+                ><small>Crear una orden de compra</small>
+              </div>
+              <b>↗</b></a
+            ><a class="action" href="/perfil"
+              ><i>▤</i>
+              <div>
+                <strong>Consultar cartera</strong
+                ><small>Ver posiciones y vender acciones</small>
+              </div>
+              <b>↗</b></a
+            ><a class="action" href="/acciones#simular"
+              ><i>≈</i>
+              <div>
+                <strong>Simular un precio</strong
+                ><small>Consultar la proyección por símbolo</small>
+              </div>
+              <b>↗</b></a
+            >
+          </section>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

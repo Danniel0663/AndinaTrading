@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+  <head th:fragment="head(title)">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title th:text="${title + ' · Andina Trading'}"></title>
+    <link rel="stylesheet" href="/andina.css" />
+    <script defer src="/andina.js"></script>
+  </head>
+  <body>
+    <aside th:fragment="sidebar(page)">
+      <a class="brand" href="/inicio"
+        ><span class="mark" aria-hidden="true">◭</span> Andina<span class="thin"
+          >Trading</span
+        ></a
+      >
+      <nav aria-label="Principal">
+        <a
+          href="/inicio"
+          th:attr="aria-current=${page == 'inicio' ? 'page' : null}"
+          ><i aria-hidden="true">⊞</i>Resumen</a
+        ><a
+          href="/acciones"
+          th:attr="aria-current=${page == 'acciones' ? 'page' : null}"
+          ><i aria-hidden="true">▥</i>Mercado</a
+        ><a
+          href="/perfil"
+          th:attr="aria-current=${page == 'perfil' ? 'page' : null}"
+          ><i aria-hidden="true">▤</i>Mi cartera</a
+        ><a
+          href="/listausuarios"
+          th:attr="aria-current=${page == 'listausuarios' ? 'page' : null}"
+          ><i aria-hidden="true">☷</i>Usuarios</a
+        >
+      </nav>
+      <a
+        class="exit"
+        th:href="${session.userEmail != null ? '/logout' : '/index'}"
+        th:text="${session.userEmail != null ? 'Cerrar sesión ↗' : 'Iniciar sesión ↗'}"
+      ></a>
+    </aside>
+    <header th:fragment="top(title)">
+      <span>Mi espacio <b>/</b> <strong th:text="${title}"></strong></span
+      ><span class="status" th:if="${@environment.matchesProfiles('local')}"
+        >Simulación local</span
+      >
+    </header>
+    <div th:fragment="avisos" aria-live="polite">
+      <p
+        class="notice"
+        th:if="${param.mensaje}"
+        th:text="${param.mensaje[0]}"
+      ></p>
+      <p class="alert" th:if="${param.error}" th:text="${param.error[0]}"></p>
+    </div>
+    <section th:fragment="quotes" class="panel">
+      <div class="sectionhead">
+        <h2>Cotizaciones</h2>
+        <small>USD por acción</small>
+      </div>
+      <div class="quote" th:each="a : ${acciones}">
+        <span
+          class="symbol"
+          th:text="${#strings.substring(a.nombreEmpresa,0,1)}"
+        ></span>
+        <div>
+          <strong th:text="${a.nombreEmpresa}"></strong
+          ><small
+            th:text="${#dates.format(a.fechaActualizacion,'dd/MM/yyyy · HH:mm')}"
+          ></small>
+        </div>
+        <strong
+          class="price"
+          th:text="${#numbers.formatDecimal(a.precioActual,1,2)}"
+        ></strong>
+      </div>
+      <p th:if="${#lists.isEmpty(acciones)}">
+        Aún no hay cotizaciones disponibles.
+      </p>
+    </section>
+  </body>
+</html>

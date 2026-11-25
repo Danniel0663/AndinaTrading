@@ -46,6 +46,11 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 		<!-- MySQL Connector -->
 		<dependency>
 			<groupId>com.mysql</groupId>
@@ -58,7 +63,11 @@
 			<artifactId>json</artifactId>
 			<version>20240303</version>
 		</dependency>
-		<!-- Testing -->
+		<dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
+        <!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -80,7 +89,16 @@
 	</dependencies>
 
 	<build>
+        <resources>
+            <resource><directory>src/main/resources</directory><excludes><exclude>templates/**</exclude><exclude>static/andina.css</exclude></excludes></resource>
+            <resource><directory>${project.build.directory}/generated-resources/astro</directory></resource>
+        </resources>
 		<plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId><artifactId>exec-maven-plugin</artifactId><version>3.5.0</version>
+                <executions><execution><id>astro</id><phase>generate-resources</phase><goals><goal>exec</goal></goals>
+                <configuration><workingDirectory>frontend</workingDirectory><executable>npm</executable><arguments><argument>run</argument><argument>build</argument></arguments></configuration></execution></executions>
+            </plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

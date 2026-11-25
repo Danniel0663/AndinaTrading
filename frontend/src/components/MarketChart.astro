@@ -1,0 +1,22 @@
+<section class="panel mb-5" data-market-chart aria-label="Gráfico de mercado">
+  <div class="flex flex-wrap items-start justify-between gap-3">
+    <div><h2 class="!mb-1">Pulso del mercado</h2><small data-source>Mercado de referencia · Coinbase Exchange</small></div>
+    <div class="flex flex-wrap items-center gap-2">
+      <label class="sr-only" for="instrument">Instrumento del gráfico</label>
+      <select id="instrument" class="!mt-0 !w-auto">
+        <optgroup label="Mercado de referencia"><option value="BTC-USD">Bitcoin / USD</option><option value="ETH-USD">Ethereum / USD</option></optgroup>
+        <optgroup label="Acciones del simulador"><option th:each="a : ${acciones}" th:value="${a.nombreEmpresa}" th:text="${a.nombreEmpresa}"></option></optgroup>
+      </select>
+      <label class="sr-only" for="interval">Intervalo de las velas</label>
+      <select id="interval" class="!mt-0 !w-auto"><option value="60">1 min</option><option value="300">5 min</option><option value="900">15 min</option></select>
+    </div>
+  </div>
+  <div class="my-4 flex flex-wrap items-baseline justify-between gap-2">
+    <strong data-price class="text-2xl tabular-nums">—</strong><small data-status role="status">Conectando…</small>
+  </div>
+  <div data-plot class="h-64 w-full min-w-0 sm:h-72" aria-label="Evolución del precio en dólares"></div>
+  <div class="mt-2 flex flex-wrap justify-between gap-2"><small data-detail>Mueve el cursor para consultar un precio.</small><small><a href="https://www.tradingview.com/" rel="external">Lightweight Charts™ · © TradingView</a></small></div>
+</section>
+<script>
+  import '../market.js';
+</script>

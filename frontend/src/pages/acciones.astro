@@ -1,0 +1,92 @@
+---
+import '../styles/site.css';
+import MarketChart from '../components/MarketChart.astro';
+---
+<!doctype html>
+<html lang="es">
+  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Mercado · Andina Trading</title><script is:inline defer src="/andina.js"></script></head>
+  <body>
+    <aside th:replace="~{base :: sidebar('acciones')}"></aside>
+    <main>
+      <header th:replace="~{base :: top('Mercado')}"></header>
+      <article>
+        <h1>Mercado</h1>
+        <div th:replace="~{base :: avisos}"></div>
+        <p class="intro" th:if="${@environment.matchesProfiles('local','portfolio')}">
+          Cotizaciones ficticias para practicar con tu saldo de simulación.
+        </p>
+        <MarketChart />
+        <div class="grid">
+          <div class="stack">
+            <section th:replace="~{base :: quotes}"></section>
+            <section class="panel">
+              <details>
+                <summary>Historial de cotizaciones</summary>
+                <div class="scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Activo</th>
+                        <th>Fecha</th>
+                        <th>Precio (USD)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="a : ${historial}">
+                        <td th:text="${a.nombreEmpresa}"></td>
+                        <td
+                          th:text="${#dates.format(a.fechaActualizacion,'dd/MM/yyyy HH:mm')}"
+                        ></td>
+                        <td
+                          th:text="${#numbers.formatDecimal(a.precioActual,1,2)}"
+                        ></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </section>
+          </div>
+          <div class="stack">
+            <section class="panel" id="orden">
+              <h2>Orden de compra</h2>
+              <form action="/comprar" method="post">
+                <label
+                  >Activo<select name="empresa" required>
+                    <option value="">Selecciona un símbolo</option>
+                    <option
+                      th:each="e : ${empresas}"
+                      th:value="${e.nombreEmpresa}"
+                      th:text="${e.nombreEmpresa}"
+                    ></option></select></label
+                ><label
+                  >Cantidad de acciones<input
+                    name="cantidad"
+                    type="number"
+                    min="1"
+                    value="1"
+                    required /></label
+                ><button>Comprar acciones</button>
+              </form>
+            </section>
+            <section class="panel" id="simular">
+              <h2>Simular precio</h2>
+              <form id="simulation">
+                <label
+                  >Activo<select name="simbolo" required>
+                    <option value="">Selecciona un símbolo</option>
+                    <option
+                      th:each="e : ${empresas}"
+                      th:value="${e.nombreEmpresa}"
+                      th:text="${e.nombreEmpresa}"
+                    ></option></select></label
+                ><button class="secondary">Calcular proyección</button
+                ><output aria-live="polite"></output>
+              </form>
+            </section>
+          </div>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>
