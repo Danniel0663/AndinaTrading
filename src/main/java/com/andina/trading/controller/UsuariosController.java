@@ -175,6 +175,22 @@ public class UsuariosController {
      *
      * @return ModelAndView que muestra la página de inicio de sesión.
      */
+    @PostMapping("/demo")
+    public String entrarDemo(jakarta.servlet.http.HttpServletRequest request) {
+        HttpSession visitante = request.getSession();
+        synchronized (visitante) {
+            if (visitante.getAttribute("userEmail") == null) {
+                String correo = java.util.UUID.randomUUID() + "@demo.invalid";
+                Usuarios demo = new Usuarios("Inversionista de prueba", correo, null,
+                        com.andina.trading.util.Rol.INVERSIONISTA, false, new BigDecimal("10000.00"));
+                urep.save(demo);
+                request.changeSessionId();
+                visitante.setAttribute("userEmail", correo);
+            }
+        }
+        return "redirect:/inicio";
+    }
+
     @GetMapping({"/", "/index"})
     public ModelAndView iniciosesion() {
         return new ModelAndView("index");
